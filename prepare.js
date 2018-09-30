@@ -13,11 +13,13 @@ fs.writeFile('config.js', content, function (err) {
 });
 
 let db = new sq('database.db3');
-let sql = 'CREATE TABLE IF NOT EXISTS users (\n' +
+db.prepare('CREATE TABLE IF NOT EXISTS users (\n' +
             '\tid INTEGER PRIMARY KEY AUTOINCREMENT,\n' +
             '\tlogin TEXT NOT NULL,\n' +
             '\tpassword TEXT NOT NULL,\n' +
-            '\ttoken TEXT);';
-db.exec(sql);
+            '\ttoken TEXT);').run();
+db.prepare('CREATE TABLE IF NOT EXISTS devices (\n' +
+    '\tid INTEGER PRIMARY KEY AUTOINCREMENT,\n' +
+    '\tname TEXT NOT NULL);').run();
 db.close();
 console.log('database created');

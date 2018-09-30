@@ -9,4 +9,7 @@ app.get('/api', function (req, res) {
 const AuthController = require(__root + 'auth/AuthController');
 app.use('/api/auth', AuthController);
 
+const DeviceController = require(__root + 'device/DeviceController');
+app.use('/api/device', DeviceController);
+
 module.exports = app;

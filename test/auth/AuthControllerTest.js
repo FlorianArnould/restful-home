@@ -77,7 +77,7 @@ describe('AuthController', function () {
         });
     });
 
-    describe('POST /api/auth/isAuthenticated', function () {
+    describe('GET /api/auth/isAuthenticated', function () {
         it('No token', (done) => {
             try {
                 request(app)
@@ -138,7 +138,7 @@ describe('AuthController', function () {
         });
     });
 
-    describe("POST /api/auth/logout", function () {
+    describe("GET /api/auth/logout", function () {
         it('No token', (done) => {
             try {
                 request(app)

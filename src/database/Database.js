@@ -27,6 +27,10 @@ class Database {
         this.db.prepare("UPDATE users SET token = null WHERE id = ?").run(id);
     }
 
+    getDevices() {
+        return this.db.prepare("SELECT id, name FROM devices").all();
+    }
+
     close() {
         this.db.close();
     }
