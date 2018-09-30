@@ -5,11 +5,11 @@ const sq = require('better-sqlite3');
 let secret = crypto.randomBytes(20).toString('hex');
 let content = "module.exports = {\n" +
   	"\t'secret': '" + secret + "'\n" +
-"};"
+"};";
 
 fs.writeFile('config.js', content, function (err) {
   if (err) throw err;
-  console.log('Saved!');
+  console.log('config.js created');
 });
 
 let db = new sq('database.db3');
@@ -20,3 +20,4 @@ let sql = 'CREATE TABLE IF NOT EXISTS users (\n' +
             '\ttoken TEXT);';
 db.exec(sql);
 db.close();
+console.log('database created');

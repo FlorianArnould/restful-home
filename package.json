@@ -1,7 +1,7 @@
 {
   "name": "restful-home",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node js backend API to control the home devices through a raspberry pi",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/server.js",
@@ -11,7 +11,7 @@
     "prepare": "node prepare.js"
   },
   "author": "FlorianArnould",
-  "license": "LGPL-3.0-or-later",
+  "license": "LGPL-3.0",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^4.1.4",
@@ -25,5 +25,9 @@
     "mocha": "^5.2.0",
     "sonarqube-scanner": "^2.1.1",
     "supertest": "^3.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FlorianArnould/restful-home"
   }
 }
