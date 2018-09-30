@@ -16,116 +16,187 @@ describe('AuthController', function () {
     });
 
     describe('POST /api/auth/login', function () {
-        it('Wrong login', function () {
-            request(app)
-                .post('/api/auth/login')
-                .send({ login: 'wrongLogin', password: 'something' })
-                .expect(404)
-                .then(res => {
-                    assert.ok(!res.body.auth);
-                    assert.equal(res.body.token, null);
-                    assert.notEqual(res.body.message, null);
-                });
+        it('Wrong login', (done) => {
+            try {
+                request(app)
+                    .post('/api/auth/login')
+                    .send({ login: 'wrongLogin', password: 'something' })
+                    .expect(404)
+                    .then(res => {
+                        assert.ok(!res.body.auth);
+                        assert.equal(res.body.token, null);
+                        assert.notEqual(res.body.message, null);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            } catch (e) {
+                done(e);
+            }
         });
 
-        it('Wrong password', function () {
-            request(app)
-                .post('/api/auth/login')
-                .send({ login: 'test', password: 'somethingWrong' })
-                .expect(401)
-                .then(res => {
-                    assert.ok(!res.body.auth);
-                    assert.equal(res.body.token, null);
-                    assert.notEqual(res.body.message, null);
-                });
+        it('Wrong password', (done) => {
+            try {
+                request(app)
+                    .post('/api/auth/login')
+                    .send({ login: 'test', password: 'somethingWrong' })
+                    .expect(401)
+                    .then(res => {
+                        assert.ok(!res.body.auth);
+                        assert.equal(res.body.token, null);
+                        assert.notEqual(res.body.message, null);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            } catch (e) {
+                done(e);
+            }
         });
 
-        it('Correct credentials', function () {
-            request(app)
-                .post('/api/auth/login')
-                .send({ login: 'test', password: 'password' })
-                .expect(200)
-                .then(res => {
-                    assert.ok(res.body.auth);
-                    assert.notEqual(res.body.token, null);
-                    assert.equal(res.body.message, null);
-                });
+        it('Correct credentials', (done) => {
+            try {
+                request(app)
+                    .post('/api/auth/login')
+                    .send({ login: 'test', password: 'password' })
+                    .expect(200)
+                    .then(res => {
+                        assert.ok(res.body.auth);
+                        assert.notEqual(res.body.token, null);
+                        assert.equal(res.body.message, null);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            } catch (e) {
+                done(e);
+            }
         });
     });
 
     describe('POST /api/auth/isAuthenticated', function () {
-        it('No token', function () {
-            request(app)
-                .post('/api/auth/isAuthenticated')
-                .send({})
-                .expect(403)
-                .then(res => {
-                    assert.ok(!res.body.auth);
-                    assert.notEqual(res.body.message, null);
-                });
+        it('No token', (done) => {
+            try {
+                request(app)
+                    .get('/api/auth/isAuthenticated')
+                    .expect(403)
+                    .then(res => {
+                        assert.ok(!res.body.auth);
+                        assert.notEqual(res.body.message, null);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            } catch (e) {
+                done(e);
+            }
         });
 
-        it('Wrong token', function () {
-            let oldToken = DatabaseUtils.generateAndSaveToken(user.id);
-            DatabaseUtils.generateAndSaveToken(user.id);
-            request(app)
-                .post('/api/auth/isAuthenticated')
-                .send({ token: oldToken })
-                .expect(401)
-                .then(res => {
-                    assert.ok(!res.body.auth);
-                    assert.notEqual(res.body.message, null);
-                });
+        it('Wrong token', (done) => {
+            try{
+                let oldToken = DatabaseUtils.generateAndSaveToken(user.id);
+                DatabaseUtils.generateAndSaveToken(user.id);
+                request(app)
+                    .get('/api/auth/isAuthenticated')
+                    .expect(401)
+                    .set('x-access-token', oldToken)
+                    .then(res => {
+                        assert.ok(!res.body.auth);
+                        assert.notEqual(res.body.message, null);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            } catch (e) {
+                done(e);
+            }
         });
 
-        it('Correct token', function () {
-            let token = DatabaseUtils.generateAndSaveToken(user.id);
-            request(app)
-                .post('/api/auth/isAuthenticated')
-                .send({ token: token })
-                .expect(200)
-                .then(res => {
-                    assert.ok(res.body.auth);
-                    assert.equal(res.body.message, null);
-                });
+        it('Correct token', (done) => {
+            try {
+                let token = DatabaseUtils.generateAndSaveToken(user.id);
+                request(app)
+                    .get('/api/auth/isAuthenticated')
+                    .set('x-access-token', token)
+                    .expect(200)
+                    .then(res => {
+                        assert.ok(res.body.auth);
+                        assert.equal(res.body.message, null);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            } catch (e) {
+                done(e);
+            }
         });
     });
 
     describe("POST /api/auth/logout", function () {
-        it('No token', function () {
-            request(app)
-                .post('/api/auth/logout')
-                .send({})
-                .expect(403)
-                .then(res => {
-                    assert.ok(!res.body.auth);
-                    assert.notEqual(res.body.message, null);
-                });
+        it('No token', (done) => {
+            try {
+                request(app)
+                    .get('/api/auth/logout')
+                    .expect(403)
+                    .then(res => {
+                        assert.ok(!res.body.auth);
+                        assert.notEqual(res.body.message, null);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            } catch (e) {
+                done(e);
+            }
         });
 
-        it('Wrong token', function () {
-            let oldToken = DatabaseUtils.generateAndSaveToken(user.id);
-            DatabaseUtils.generateAndSaveToken(user.id);
-            request(app)
-                .post('/api/auth/logout')
-                .send({ token: oldToken })
-                .expect(401)
-                .then(res => {
-                    assert.ok(!res.body.auth);
-                    assert.notEqual(res.body.message, null);
-                });
+        it('Wrong token', (done) => {
+            try {
+                let oldToken = DatabaseUtils.generateAndSaveToken(user.id);
+                DatabaseUtils.generateAndSaveToken(user.id);
+                request(app)
+                    .get('/api/auth/logout')
+                    .set('x-access-token', oldToken)
+                    .expect(401)
+                    .then(res => {
+                        assert.ok(!res.body.auth);
+                        assert.notEqual(res.body.message, null);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            } catch (e) {
+                done(e);
+            }
         });
 
-        it('Correct token', function () {
-            let token = DatabaseUtils.generateAndSaveToken(user.id);
-            request(app)
-                .post('/api/auth/logout')
-                .send({ token: token })
-                .expect(200)
-                .then(res => {
-                    assert.ok(!res.body.auth);
-                    assert.equal(res.body.token, null);
-                });
+        it('Correct token', (done) => {
+            try {
+                let token = DatabaseUtils.generateAndSaveToken(user.id);
+                request(app)
+                    .get('/api/auth/logout')
+                    .set('x-access-token', token)
+                    .expect(200)
+                    .then(res => {
+                        assert.ok(!res.body.auth);
+                        assert.equal(res.body.token, null);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            } catch (e) {
+                done(e);
+            }
+
         });
     });
 });

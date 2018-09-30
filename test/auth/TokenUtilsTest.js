@@ -17,7 +17,7 @@ describe('TokenUtils', function () {
         let db = new Database();
         db.setToken(id, tokenValues.value);
         db.close();
-        let req = { body: { token: tokenValues.token } };
+        let req = { headers: { 'x-access-token': tokenValues.token } };
         TokenUtils.verifyToken(req, null, function (user) {
             DatabaseUtils.removeUser(id);
             assert.notEqual(user, null);

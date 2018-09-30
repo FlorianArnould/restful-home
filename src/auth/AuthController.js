@@ -24,13 +24,13 @@ router.post('/login', function(req, res) {
     }
 });
 
-router.post('/isAuthenticated', function (req, res) {
+router.get('/isAuthenticated', function (req, res) {
     TokenUtils.verifyToken(req, res, function () {
         res.status(200).send({ auth: true });
     });
 });
 
-router.post('/logout', function(req, res) {
+router.get('/logout', function(req, res) {
     TokenUtils.verifyToken(req, res, function (user) {
         let db = new Database();
         db.resetToken(user.id);
