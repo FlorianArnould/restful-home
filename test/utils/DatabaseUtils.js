@@ -19,6 +19,19 @@ function removeUser(id) {
     db.close();
 }
 
+function createDevice(device) {
+    let db = new sq('database.db3');
+    let info = db.prepare('INSERT INTO devices (name, description, type, file) VALUES (?, ?, ?, ?)').run(device.name, device.description, device.type, device.file);
+    db.close();
+    return info.lastInsertROWID;
+}
+
+function removeDevice(id) {
+    let db = new sq('database.db3');
+    db.prepare('DELETE FROM devices WHERE id = ?').run(id);
+    db.close();
+}
+
 function generateAndSaveSessionToken(id) {
     let token = TokenUtils.generateSessionToken();
     let db = new Database();
@@ -45,6 +58,8 @@ function generateAndSaveShortTermRefreshToken(id) {
 
 module.exports.createUser = createUser;
 module.exports.removeUser = removeUser;
+module.exports.createDevice = createDevice;
+module.exports.removeDevice = removeDevice;
 module.exports.generateAndSaveSessionToken = generateAndSaveSessionToken;
 module.exports.generateAndSaveRefreshToken = generateAndSaveRefreshToken;
 module.exports.generateAndSaveShortTermRefreshToken = generateAndSaveShortTermRefreshToken;

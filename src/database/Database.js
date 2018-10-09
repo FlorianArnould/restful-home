@@ -30,7 +30,11 @@ class Database {
     }
 
     getDevices() {
-        return this.db.prepare("SELECT id, name FROM devices").all();
+        return this.db.prepare("SELECT id, name, description, type, file FROM devices").all();
+    }
+
+    getDeviceById(id) {
+        return this.db.prepare("SELECT id, name, description, type, file FROM devices WHERE id = ?").get(id);
     }
 
     close() {

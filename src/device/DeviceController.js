@@ -17,8 +17,28 @@ router.get('/all', function (req, res) {
     })
 });
 
-router.post('/:id', function (req, res) {
-    res.send('user ' + req.params.id);
+router.put('/onoff/:id', function (req, res) {
+    TokenUtils.verifySessionToken(req, res, function () {
+        let deviceId = req.params.id;
+        let db = new Database();
+        try {
+            let device = db.getDeviceById(deviceId);
+            if (!device) return res.status(404).send({ success: false, message: 'Device does not exist'});
+        } finally {
+            db.close();
+        }
+        let status = req.body.status;
+        if (!status) return res.status(400).send({ success: false, message: 'No status provided' });
+        if (status === 'on') {
+            console.log('Set the device', deviceId, 'to status on');
+            res.status(200).send({ success: true, deviceId: deviceId , status: 'on' });
+        } else if (status === 'off') {
+            console.log('Set the device', deviceId, 'to status off');
+            res.status(200).send({ success: true, deviceId: deviceId , status: 'off' });
+        } else {
+            res.status(400).send({ success: false, message: "Invalid status: need to be 'on' or 'off'" });
+        }
+    })
 });
 
 module.exports = router;
