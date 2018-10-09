@@ -3,7 +3,7 @@ const app = express();
 global.__root   = __dirname + '/'; 
 
 app.get('/api', function (req, res) {
-    res.status(200).send('API works.');
+    res.status(200).send({ running: true });
 });
 
 const AuthController = require(__root + 'auth/AuthController');

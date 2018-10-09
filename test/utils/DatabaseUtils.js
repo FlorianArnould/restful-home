@@ -1,12 +1,14 @@
 const sq = require('better-sqlite3');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('../../config');
 const Database = require('../../src/database/Database');
 const TokenUtils = require('../../src/auth/TokenUtils');
 
 function createUser(user) {
     let db = new sq('database.db3');
     let hashedPassword = bcrypt.hashSync(user.password, 8);
-    let info = db.prepare('INSERT INTO users (login, password) VALUES (?, ?)').run(user.login, hashedPassword);
+    let info = db.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run(user.username, hashedPassword);
     db.close();
     return info.lastInsertROWID;
 }
@@ -17,14 +19,32 @@ function removeUser(id) {
     db.close();
 }
 
-function generateAndSaveToken(id) {
-    let tokenValues = TokenUtils.generateToken();
+function generateAndSaveSessionToken(id) {
+    let token = TokenUtils.generateSessionToken();
     let db = new Database();
-    db.setToken(id, tokenValues.value);
+    db.setSessionToken(id, token);
     db.close();
-    return tokenValues.token;
+    return token;
+}
+
+function generateAndSaveRefreshToken(id) {
+    let token = TokenUtils.generateRefreshToken();
+    let db = new Database();
+    db.setRefreshToken(id, token);
+    db.close();
+    return token;
+}
+
+function generateAndSaveShortTermRefreshToken(id) {
+    let token = jwt.sign({value: 'value'}, config.secret, {expiresIn: 3888000 });
+    let db = new Database();
+    db.setRefreshToken(id, token);
+    db.close();
+    return token;
 }
 
 module.exports.createUser = createUser;
 module.exports.removeUser = removeUser;
-module.exports.generateAndSaveToken = generateAndSaveToken;
+module.exports.generateAndSaveSessionToken = generateAndSaveSessionToken;
+module.exports.generateAndSaveRefreshToken = generateAndSaveRefreshToken;
+module.exports.generateAndSaveShortTermRefreshToken = generateAndSaveShortTermRefreshToken;

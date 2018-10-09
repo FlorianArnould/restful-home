@@ -12,14 +12,10 @@ fs.writeFile('config.js', content, function (err) {
   console.log('config.js created');
 });
 
+let data = fs.readFileSync('prepare.sql');
+
 let db = new sq('database.db3');
-db.prepare('CREATE TABLE IF NOT EXISTS users (\n' +
-            '\tid INTEGER PRIMARY KEY AUTOINCREMENT,\n' +
-            '\tlogin TEXT NOT NULL,\n' +
-            '\tpassword TEXT NOT NULL,\n' +
-            '\ttoken TEXT);').run();
-db.prepare('CREATE TABLE IF NOT EXISTS devices (\n' +
-    '\tid INTEGER PRIMARY KEY AUTOINCREMENT,\n' +
-    '\tname TEXT NOT NULL);').run();
+console.log("Creating tables ...");
+db.exec(data.toString());
 db.close();
-console.log('database created');
+console.log('Tables created');

@@ -5,7 +5,7 @@ const app = require('../../src/app');
 
 describe('DeviceController', function () {
 
-    let user = { login: 'test', password: 'password' };
+    let user = { username: 'test', password: 'password' };
 
     before(function () {
         user.id = DatabaseUtils.createUser(user);
@@ -36,8 +36,8 @@ describe('DeviceController', function () {
 
         it('Wrong token', (done) => {
             try {
-                let oldToken = DatabaseUtils.generateAndSaveToken(user.id);
-                DatabaseUtils.generateAndSaveToken(user.id);
+                let oldToken = DatabaseUtils.generateAndSaveSessionToken(user.id);
+                DatabaseUtils.generateAndSaveSessionToken(user.id);
                 request(app)
                     .get('/api/device/all')
                     .set('x-access-token', oldToken)
@@ -57,7 +57,7 @@ describe('DeviceController', function () {
 
         it('Correct token', (done) => {
             try {
-                let token = DatabaseUtils.generateAndSaveToken(user.id);
+                let token = DatabaseUtils.generateAndSaveSessionToken(user.id);
                 request(app)
                     .get('/api/device/all')
                     .set('x-access-token', token)

@@ -9,7 +9,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 router.get('/all', function (req, res) {
-    TokenUtils.verifyToken(req, res, function () {
+    TokenUtils.verifySessionToken(req, res, function () {
         let db = new Database();
         let devices = db.getDevices();
         db.close();
