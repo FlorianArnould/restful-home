@@ -26,7 +26,7 @@ describe('AuthController', function () {
                         assert.ok(!res.body.auth);
                         assert.strictEqual(res.body.refreshToken, undefined);
                         assert.strictEqual(res.body.sessionToken, undefined);
-                        assert.notEqual(res.body.message, null);
+                        assert.ok(res.body.message);
                         done();
                     })
                     .catch(err => {
@@ -47,7 +47,7 @@ describe('AuthController', function () {
                         assert.ok(!res.body.auth);
                         assert.strictEqual(res.body.refreshToken, undefined);
                         assert.strictEqual(res.body.sessionToken, undefined);
-                        assert.notEqual(res.body.message, null);
+                        assert.ok(res.body.message);
                         done();
                     })
                     .catch(err => {
@@ -66,9 +66,9 @@ describe('AuthController', function () {
                     .expect(200)
                     .then(res => {
                         assert.ok(res.body.auth);
-                        assert.notStrictEqual(res.body.refreshToken, undefined);
-                        assert.notStrictEqual(res.body.sessionToken, undefined);
-                        assert.equal(res.body.message, null);
+                        assert.ok(res.body.refreshToken);
+                        assert.ok(res.body.sessionToken);
+                        assert.ok(!res.body.message);
                         done();
                     })
                     .catch(err => {

@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router([]);
+const router = express.Router();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 
@@ -28,7 +28,7 @@ router.post('/login', function(req, res) {
 
 router.get('/refreshToken', function(req, res) {
     TokenUtils.verifyRefreshToken(req, res, function (user, canRenewRefreshToken) {
-        if (!user) return res.status(401).send({ auth: false, token: null, message: 'This token was revoked' });
+        if (!user) return res.status(401).send({ auth: false, message: 'This token was revoked' });
         let message = { auth: true };
         let db = new Database();
         if(canRenewRefreshToken) {

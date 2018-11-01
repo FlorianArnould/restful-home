@@ -12,4 +12,7 @@ app.use('/api/auth', AuthController);
 const DeviceController = require(__root + 'device/DeviceController');
 app.use('/api/device', DeviceController);
 
+const StreamController = require(__root + 'stream/StreamController');
+app.use('/api/stream', StreamController);
+
 module.exports = app;

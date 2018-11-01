@@ -63,8 +63,7 @@ describe('DeviceController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        assert.ok(res.body.success);
-                        assert.notEqual(res.body.devices, null);
+                        assert.notEqual(res.body, null);
                         done();
                     })
                     .catch(err => {

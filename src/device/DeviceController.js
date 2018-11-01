@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router([]);
+const router = express.Router();
 const bodyParser = require('body-parser');
 
 const TokenUtils = require('../auth/TokenUtils');
@@ -13,7 +13,7 @@ router.get('/all', function (req, res) {
         let db = new Database();
         let devices = db.getDevices();
         db.close();
-        res.status(200).send({ success: true, devices: devices });
+        res.status(200).send(devices);
     })
 });
 
