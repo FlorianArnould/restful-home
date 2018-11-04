@@ -9,23 +9,21 @@ const StreamManager = require('./StreamManager');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-const sendMessage = (res, message) => res.status(message.code).send(message.content);
-
-router.get('/start', function (req, res) {
+router.get('/create', function (req, res) {
     TokenUtils.verifySessionToken(req, res, function () {
-        StreamManager.createStream(sendMessage);
+        StreamManager.createStream(message => res.status(message.code).send(message.content));
     });
 });
 
 router.get('/:id', function (req, res) {
     TokenUtils.verifySessionToken(req, res, function () {
-        StreamManager.readString(req.params.id, sendMessage);
+        StreamManager.readString(req.params.id, message => res.status(message.code).send(message.content));
     });
 });
 
-router.delete('/stop/:id', function (req, res) {
+router.delete('/:id', function (req, res) {
     TokenUtils.verifySessionToken(req, res, function () {
-        StreamManager.deleteStream(req.params.id, sendMessage);
+        StreamManager.deleteStream(req.params.id, message => res.status(message.code).send(message.content));
     });
 });
 

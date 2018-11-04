@@ -20,7 +20,7 @@ function verifySessionToken(req, res, next) {
     let token = req.headers['x-access-token'];
     if (!token) return res.status(403).send({auth: false, message: 'No token provided.'});
     jwt.verify(token, config.secret, function (err) {
-        if (err) return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
+        if (err) return res.status(401).send({auth: false, message: 'Failed to authenticate token.'});
         let db = new Database();
         let user = db.getUserByToken(token);
         db.close();
@@ -33,7 +33,7 @@ function verifyRefreshToken(req, res, next) {
     let token = req.headers['x-access-token'];
     if (!token) return res.status(403).send({auth: false, message: 'No token provided.'});
     jwt.verify(token, config.secret, function (err, decoded) {
-        if (err) return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
+        if (err) return res.status(401).send({auth: false, message: 'Failed to authenticate token.'});
         let user;
         let db = new Database();
         user = db.getUserByRefreshToken(token);

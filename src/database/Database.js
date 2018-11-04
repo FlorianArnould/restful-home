@@ -37,6 +37,26 @@ class Database {
         return this.db.prepare("SELECT id, name, description, type, file FROM devices WHERE id = ?").get(id);
     }
 
+    createStream(id) {
+        this.db.prepare("INSERT INTO streams(id, offset) VALUES (?, 0)").run(id);
+    }
+
+    getStreamInfo(id) {
+        return this.db.prepare("SELECT offset, isFinished FROM streams WHERE id = ?").get(id);
+    }
+
+    setStreamOffset(id, offset) {
+        this.db.prepare("UPDATE streams SET offset = ? WHERE id = ?").run(offset, id);
+    }
+
+    deleteStream(id) {
+        this.db.prepare("DELETE FROM streams WHERE id = ?").run(id);
+    }
+
+    finishStream(id) {
+        this.db.prepare("UPDATE streams SET isFinished = 'true' WHERE id = ?").run(id);
+    }
+
     close() {
         this.db.close();
     }

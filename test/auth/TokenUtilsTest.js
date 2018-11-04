@@ -64,7 +64,7 @@ describe('TokenUtils', function () {
             let req = {headers: {'x-access-token': token}};
             let res = new class {
                 status(code) {
-                    assert.equal(code, 500);
+                    assert.equal(code, 401);
                     return this;
                 }
 
@@ -115,7 +115,7 @@ describe('TokenUtils', function () {
             let req = {headers: {'x-access-token': token}};
             let res = new class {
                 status(code) {
-                    assert.equal(code, 500);
+                    assert.equal(code, 401);
                     return this;
                 }
 

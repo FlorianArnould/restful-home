@@ -17,3 +17,8 @@ CREATE TABLE IF NOT EXISTS devices (
 	description TEXT NOT NULL,
 	type INTEGER NOT NULL REFERENCES device_type(id),
 	file TEXT NOT NULL);
+
+CREATE TABLE IF NOT EXISTS streams (
+    id TEXT PRIMARY KEY,
+    offset INTEGER NOT NULL,
+    isFinished BOOLEAN NOT NULL DEFAULT 'false');
