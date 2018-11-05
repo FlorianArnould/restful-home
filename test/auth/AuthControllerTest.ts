@@ -1,18 +1,24 @@
-const request = require('supertest');
-const assert = require('assert');
-const DatabaseUtils = require('../utils/DatabaseUtils');
-const app = require('../../src/app');
+import * as request from 'supertest';
+import {
+    createUser,
+    generateAndSaveRefreshToken,
+    generateAndSaveSessionToken,
+    generateAndSaveShortTermRefreshToken,
+    removeUser
+} from "../utils/DatabaseUtils";
+import {ok, notEqual, strictEqual, equal, notStrictEqual} from "assert";
+import {app} from '../../src/app';
 
 describe('AuthController', function () {
 
-    let user = { username: 'test', password: 'password' };
+    let user = { id: 0, username: 'test', password: 'password', refresh_token: '', token: '' };
 
     before(function () {
-        user.id = DatabaseUtils.createUser(user);
+        user.id = createUser(user);
     });
 
     after(function () {
-        DatabaseUtils.removeUser(user.id);
+        removeUser(user.id);
     });
 
     describe('POST /api/auth/login', function () {
@@ -23,10 +29,10 @@ describe('AuthController', function () {
                     .send({ username: 'wrongLogin', password: 'something' })
                     .expect(401)
                     .then(res => {
-                        assert.ok(!res.body.auth);
-                        assert.strictEqual(res.body.refreshToken, undefined);
-                        assert.strictEqual(res.body.sessionToken, undefined);
-                        assert.ok(res.body.message);
+                        ok(!res.body.auth);
+                        strictEqual(res.body.refreshToken, undefined);
+                        strictEqual(res.body.sessionToken, undefined);
+                        ok(res.body.message);
                         done();
                     })
                     .catch(err => {
@@ -44,10 +50,10 @@ describe('AuthController', function () {
                     .send({ username: 'test', password: 'somethingWrong' })
                     .expect(401)
                     .then(res => {
-                        assert.ok(!res.body.auth);
-                        assert.strictEqual(res.body.refreshToken, undefined);
-                        assert.strictEqual(res.body.sessionToken, undefined);
-                        assert.ok(res.body.message);
+                        ok(!res.body.auth);
+                        strictEqual(res.body.refreshToken, undefined);
+                        strictEqual(res.body.sessionToken, undefined);
+                        ok(res.body.message);
                         done();
                     })
                     .catch(err => {
@@ -65,10 +71,10 @@ describe('AuthController', function () {
                     .send({ username: 'test', password: 'password' })
                     .expect(200)
                     .then(res => {
-                        assert.ok(res.body.auth);
-                        assert.ok(res.body.refreshToken);
-                        assert.ok(res.body.sessionToken);
-                        assert.ok(!res.body.message);
+                        ok(res.body.auth);
+                        ok(res.body.refreshToken);
+                        ok(res.body.sessionToken);
+                        ok(!res.body.message);
                         done();
                     })
                     .catch(err => {
@@ -87,10 +93,10 @@ describe('AuthController', function () {
                     .get('/api/auth/refreshToken')
                     .expect(403)
                     .then(res => {
-                        assert.ok(!res.body.auth);
-                        assert.strictEqual(res.body.refreshToken, undefined);
-                        assert.strictEqual(res.body.sessionToken, undefined);
-                        assert.notEqual(res.body.message, null);
+                        ok(!res.body.auth);
+                        strictEqual(res.body.refreshToken, undefined);
+                        strictEqual(res.body.sessionToken, undefined);
+                        notEqual(res.body.message, null);
                         done();
                     })
                     .catch(err => {
@@ -103,17 +109,17 @@ describe('AuthController', function () {
 
         it('Wrong token', (done) => {
             try{
-                let oldToken = DatabaseUtils.generateAndSaveRefreshToken(user.id);
-                DatabaseUtils.generateAndSaveRefreshToken(user.id);
+                let oldToken = generateAndSaveRefreshToken(user.id);
+                generateAndSaveRefreshToken(user.id);
                 request(app)
                     .get('/api/auth/refreshToken')
                     .expect(401)
                     .set('x-access-token', oldToken)
                     .then(res => {
-                        assert.ok(!res.body.auth);
-                        assert.strictEqual(res.body.refreshToken, undefined);
-                        assert.strictEqual(res.body.sessionToken, undefined);
-                        assert.notEqual(res.body.message, null);
+                        ok(!res.body.auth);
+                        strictEqual(res.body.refreshToken, undefined);
+                        strictEqual(res.body.sessionToken, undefined);
+                        notEqual(res.body.message, null);
                         done();
                     })
                     .catch(err => {
@@ -126,16 +132,16 @@ describe('AuthController', function () {
 
         it('Correct token', (done) => {
             try {
-                let token = DatabaseUtils.generateAndSaveRefreshToken(user.id);
+                let token = generateAndSaveRefreshToken(user.id);
                 request(app)
                     .get('/api/auth/refreshToken')
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        assert.ok(res.body.auth);
-                        assert.strictEqual(res.body.refreshToken, undefined);
-                        assert.notStrictEqual(res.body.sessionToken, undefined);
-                        assert.equal(res.body.message, null);
+                        ok(res.body.auth);
+                        strictEqual(res.body.refreshToken, undefined);
+                        notStrictEqual(res.body.sessionToken, undefined);
+                        equal(res.body.message, null);
                         done();
                     })
                     .catch(err => {
@@ -148,16 +154,16 @@ describe('AuthController', function () {
 
         it('Correct token which will expire soon', (done) => {
             try {
-                let token = DatabaseUtils.generateAndSaveShortTermRefreshToken(user.id);
+                let token = generateAndSaveShortTermRefreshToken(user.id);
                 request(app)
                     .get('/api/auth/refreshToken')
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        assert.ok(res.body.auth);
-                        assert.notStrictEqual(res.body.refreshToken, undefined);
-                        assert.notStrictEqual(res.body.sessionToken, undefined);
-                        assert.equal(res.body.message, null);
+                        ok(res.body.auth);
+                        notStrictEqual(res.body.refreshToken, undefined);
+                        notStrictEqual(res.body.sessionToken, undefined);
+                        equal(res.body.message, null);
                         done();
                     })
                     .catch(err => {
@@ -176,8 +182,8 @@ describe('AuthController', function () {
                     .get('/api/auth/isAuthenticated')
                     .expect(403)
                     .then(res => {
-                        assert.ok(!res.body.auth);
-                        assert.notEqual(res.body.message, null);
+                        ok(!res.body.auth);
+                        notEqual(res.body.message, null);
                         done();
                     })
                     .catch(err => {
@@ -190,15 +196,15 @@ describe('AuthController', function () {
 
         it('Wrong token', (done) => {
             try{
-                let oldToken = DatabaseUtils.generateAndSaveSessionToken(user.id);
-                DatabaseUtils.generateAndSaveSessionToken(user.id);
+                let oldToken = generateAndSaveSessionToken(user.id);
+                generateAndSaveSessionToken(user.id);
                 request(app)
                     .get('/api/auth/isAuthenticated')
                     .expect(401)
                     .set('x-access-token', oldToken)
                     .then(res => {
-                        assert.ok(!res.body.auth);
-                        assert.notEqual(res.body.message, null);
+                        ok(!res.body.auth);
+                        notEqual(res.body.message, null);
                         done();
                     })
                     .catch(err => {
@@ -211,14 +217,14 @@ describe('AuthController', function () {
 
         it('Correct token', (done) => {
             try {
-                let token = DatabaseUtils.generateAndSaveSessionToken(user.id);
+                let token = generateAndSaveSessionToken(user.id);
                 request(app)
                     .get('/api/auth/isAuthenticated')
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        assert.ok(res.body.auth);
-                        assert.equal(res.body.message, null);
+                        ok(res.body.auth);
+                        equal(res.body.message, null);
                         done();
                     })
                     .catch(err => {
@@ -237,8 +243,8 @@ describe('AuthController', function () {
                     .get('/api/auth/logout')
                     .expect(403)
                     .then(res => {
-                        assert.ok(!res.body.auth);
-                        assert.notEqual(res.body.message, null);
+                        ok(!res.body.auth);
+                        notEqual(res.body.message, null);
                         done();
                     })
                     .catch(err => {
@@ -251,15 +257,15 @@ describe('AuthController', function () {
 
         it('Wrong token', (done) => {
             try {
-                let oldToken = DatabaseUtils.generateAndSaveSessionToken(user.id);
-                DatabaseUtils.generateAndSaveSessionToken(user.id);
+                let oldToken = generateAndSaveSessionToken(user.id);
+                generateAndSaveSessionToken(user.id);
                 request(app)
                     .get('/api/auth/logout')
                     .set('x-access-token', oldToken)
                     .expect(401)
                     .then(res => {
-                        assert.ok(!res.body.auth);
-                        assert.notEqual(res.body.message, null);
+                        ok(!res.body.auth);
+                        notEqual(res.body.message, null);
                         done();
                     })
                     .catch(err => {
@@ -272,14 +278,14 @@ describe('AuthController', function () {
 
         it('Correct token', (done) => {
             try {
-                let token = DatabaseUtils.generateAndSaveSessionToken(user.id);
+                let token = generateAndSaveSessionToken(user.id);
                 request(app)
                     .get('/api/auth/logout')
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        assert.ok(!res.body.auth);
-                        assert.equal(res.body.token, null);
+                        ok(!res.body.auth);
+                        equal(res.body.token, null);
                         done();
                     })
                     .catch(err => {

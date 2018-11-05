@@ -1,15 +1,16 @@
-const express = require('express');
-const router = express.Router();
-const bodyParser = require('body-parser');
+import {Router} from "express";
+import * as bodyParser from 'body-parser'
 
-const TokenUtils = require('../auth/TokenUtils');
-const Database = require('../database/Database');
+import {Database} from "../database/Database";
+import {verifySessionToken} from "../auth";
+
+export const router = Router();
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-router.get('/all', function (req, res) {
-    TokenUtils.verifySessionToken(req, res, function () {
+router.get('/all', (req, res) => {
+    verifySessionToken(req, res, () => {
         let db = new Database();
         let devices = db.getDevices();
         db.close();
@@ -17,8 +18,8 @@ router.get('/all', function (req, res) {
     })
 });
 
-router.put('/onoff/:id', function (req, res) {
-    TokenUtils.verifySessionToken(req, res, function () {
+router.put('/onoff/:id', (req, res) => {
+    verifySessionToken(req, res, () => {
         let deviceId = req.params.id;
         let db = new Database();
         try {
@@ -40,5 +41,3 @@ router.put('/onoff/:id', function (req, res) {
         }
     })
 });
-
-module.exports = router;

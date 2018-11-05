@@ -1,59 +1,61 @@
-const sq = require('better-sqlite3');
+import * as SQLiteDatabase from 'better-sqlite3';
+import {Device, StreamInfo, User} from "../model";
+export class Database {
+    private db: SQLiteDatabase;
 
-class Database {
     constructor() {
-        this.db = new sq('database.db3');
+        this.db = new SQLiteDatabase('database.db');
     }
 
-    getUser(username) {
+    getUser(username: string): User {
         return this.db.prepare("SELECT id, username, password, refresh_token, token FROM users WHERE username = ?").get(username);
     }
 
-    getUserByToken(token) {
+    getUserByToken(token: string): User {
         return this.db.prepare("SELECT id, username, password, refresh_token, token FROM users WHERE token = ?").get(token);
     }
 
-    getUserByRefreshToken(refresh_token) {
+    getUserByRefreshToken(refresh_token: string): User {
         return this.db.prepare("SELECT id, username, password, refresh_token, token FROM users WHERE refresh_token = ?").get(refresh_token);
     }
 
-    setSessionToken(id, token) {
+    setSessionToken(id: number, token: string) {
         this.db.prepare("UPDATE users SET token = ? WHERE id = ?").run(token, id);
     }
 
-    setRefreshToken(id, refresh_token) {
+    setRefreshToken(id: number, refresh_token: string) {
         this.db.prepare("UPDATE users SET refresh_token = ? WHERE id = ?").run(refresh_token, id);
     }
 
-    resetTokens(id) {
+    resetTokens(id: number) {
         this.db.prepare("UPDATE users SET token = null, refresh_token = null WHERE id = ?").run(id);
     }
 
-    getDevices() {
+    getDevices(): Device[] {
         return this.db.prepare("SELECT id, name, description, type, file FROM devices").all();
     }
 
-    getDeviceById(id) {
+    getDeviceById(id: number): Device {
         return this.db.prepare("SELECT id, name, description, type, file FROM devices WHERE id = ?").get(id);
     }
 
-    createStream(id) {
+    createStream(id: string) {
         this.db.prepare("INSERT INTO streams(id, offset) VALUES (?, 0)").run(id);
     }
 
-    getStreamInfo(id) {
+    getStreamInfo(id: string): StreamInfo {
         return this.db.prepare("SELECT offset, isFinished FROM streams WHERE id = ?").get(id);
     }
 
-    setStreamOffset(id, offset) {
+    setStreamOffset(id: string, offset: number) {
         this.db.prepare("UPDATE streams SET offset = ? WHERE id = ?").run(offset, id);
     }
 
-    deleteStream(id) {
+    deleteStream(id: string) {
         this.db.prepare("DELETE FROM streams WHERE id = ?").run(id);
     }
 
-    finishStream(id) {
+    finishStream(id: string) {
         this.db.prepare("UPDATE streams SET isFinished = 'true' WHERE id = ?").run(id);
     }
 
@@ -61,5 +63,3 @@ class Database {
         this.db.close();
     }
 }
-
-module.exports = Database;

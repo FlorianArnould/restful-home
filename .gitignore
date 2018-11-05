@@ -60,10 +60,11 @@ typings/
 # next.js build output
 .next
 
-database.db3
+database.db
 package-lock.json
-config.js
+config.ts
 .idea
 .scannerwork
 ssl
 streams
+dist
