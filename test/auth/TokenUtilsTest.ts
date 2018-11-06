@@ -5,19 +5,20 @@ import {Database} from "../../src/database/Database";
 import {secret} from '../../config';
 import {sign} from "jsonwebtoken";
 import {randomBytes} from "crypto";
-import {User} from "../../src/model";
-import {Request, Response} from "express";
+import {ErrorResponse, User} from "../../src/model";
+import {Request} from "express";
 import * as TypeMoq from "typemoq";
+import {Response} from "../../src/router";
 
 describe('TokenUtils', function () {
     let user = {id: 0, username: 'test', password: 'password', refresh_token: '', token: ''};
     let mockReq: TypeMoq.IMock<Request>;
-    let res: Response;
+    let res: Response<ErrorResponse>;
     before(function () {
         user.id = createUser(user);
         mockReq = TypeMoq.Mock.ofType<Request>();
-        const mockRes = TypeMoq.Mock.ofType<Response>();
-        mockRes.setup(x => x.send(TypeMoq.It.isAnyString())).returns((message: string) => {
+        const mockRes = TypeMoq.Mock.ofType<Response<ErrorResponse>>();
+        mockRes.setup(x => x.send(TypeMoq.It.is<ErrorResponse>(() => true))).returns((message: string) => {
             console.error(message);
             ok(false);
             return mockRes.target;
@@ -72,12 +73,12 @@ describe('TokenUtils', function () {
             db.setSessionToken(user.id, token);
             db.close();
             mockReq.setup(x => x.get(TypeMoq.It.isAnyString())).returns(() => token);
-            const mockRes = TypeMoq.Mock.ofType<Response>();
+            const mockRes = TypeMoq.Mock.ofType<Response<ErrorResponse>>();
             mockRes.setup(x => x.status(TypeMoq.It.isAnyNumber())).returns((code: number) => {
                 deepStrictEqual(code, 401);
                 return mockRes.target;
             });
-            mockRes.setup(x => x.send(TypeMoq.It.isAnyString())).returns((message: string) => {
+            mockRes.setup(x => x.send(TypeMoq.It.is<ErrorResponse>(() => true))).returns((message: string) => {
                 notEqual(message, null);
                 done();
                 return mockRes.target;
@@ -111,8 +112,8 @@ describe('TokenUtils', function () {
             db.setRefreshToken(user.id, token);
             db.close();
             mockReq.setup(x => x.get(TypeMoq.It.isAnyString())).returns(() => token);
-            const mockRes = TypeMoq.Mock.ofType<Response>();
-            mockRes.setup(x => x.send(TypeMoq.It.isAnyString())).returns((message: string) => {
+            const mockRes = TypeMoq.Mock.ofType<Response<ErrorResponse>>();
+            mockRes.setup(x => x.send(TypeMoq.It.is<ErrorResponse>(() => true))).returns((message: string) => {
                 notEqual(message, null);
                 done();
                 return mockRes.target;

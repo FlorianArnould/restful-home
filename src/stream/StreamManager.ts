@@ -39,7 +39,7 @@ export function readString(id: string, callback: (code: number, response: Stream
     });
 }
 
-export function deleteStream(id: string, callback: (code: number, response: ErrorResponse) => void) {
+export function deleteStream(id: string, callback: (code: number, response: ErrorResponse | undefined) => void) {
     checkStreamFolder((code, response) => {
         if (response) callback(code, response);
         checkStreamFile(id, (code, response) => {
@@ -49,7 +49,7 @@ export function deleteStream(id: string, callback: (code: number, response: Erro
             db.close();
             unlink('streams/' + id, err => {
                 if (err) return callback(500, {error: "Cannot remove the stream file"});
-                callback(200, {});
+                callback(200, undefined);
             });
         });
     });

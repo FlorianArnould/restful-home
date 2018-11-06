@@ -29,10 +29,9 @@ describe('AuthController', function () {
                     .send({ username: 'wrongLogin', password: 'something' })
                     .expect(401)
                     .then(res => {
-                        ok(!res.body.auth);
                         strictEqual(res.body.refreshToken, undefined);
                         strictEqual(res.body.sessionToken, undefined);
-                        ok(res.body.message);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -50,10 +49,9 @@ describe('AuthController', function () {
                     .send({ username: 'test', password: 'somethingWrong' })
                     .expect(401)
                     .then(res => {
-                        ok(!res.body.auth);
                         strictEqual(res.body.refreshToken, undefined);
                         strictEqual(res.body.sessionToken, undefined);
-                        ok(res.body.message);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -71,10 +69,9 @@ describe('AuthController', function () {
                     .send({ username: 'test', password: 'password' })
                     .expect(200)
                     .then(res => {
-                        ok(res.body.auth);
                         ok(res.body.refreshToken);
                         ok(res.body.sessionToken);
-                        ok(!res.body.message);
+                        ok(!res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -93,10 +90,9 @@ describe('AuthController', function () {
                     .get('/api/auth/refreshToken')
                     .expect(403)
                     .then(res => {
-                        ok(!res.body.auth);
                         strictEqual(res.body.refreshToken, undefined);
                         strictEqual(res.body.sessionToken, undefined);
-                        notEqual(res.body.message, null);
+                        notEqual(res.body.error, null);
                         done();
                     })
                     .catch(err => {
@@ -116,10 +112,9 @@ describe('AuthController', function () {
                     .expect(401)
                     .set('x-access-token', oldToken)
                     .then(res => {
-                        ok(!res.body.auth);
                         strictEqual(res.body.refreshToken, undefined);
                         strictEqual(res.body.sessionToken, undefined);
-                        notEqual(res.body.message, null);
+                        notEqual(res.body.error, null);
                         done();
                     })
                     .catch(err => {
@@ -138,10 +133,9 @@ describe('AuthController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        ok(res.body.auth);
                         strictEqual(res.body.refreshToken, undefined);
                         notStrictEqual(res.body.sessionToken, undefined);
-                        equal(res.body.message, null);
+                        equal(res.body.error, null);
                         done();
                     })
                     .catch(err => {
@@ -160,10 +154,9 @@ describe('AuthController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        ok(res.body.auth);
                         notStrictEqual(res.body.refreshToken, undefined);
                         notStrictEqual(res.body.sessionToken, undefined);
-                        equal(res.body.message, null);
+                        equal(res.body.error, null);
                         done();
                     })
                     .catch(err => {
@@ -182,8 +175,7 @@ describe('AuthController', function () {
                     .get('/api/auth/isAuthenticated')
                     .expect(403)
                     .then(res => {
-                        ok(!res.body.auth);
-                        notEqual(res.body.message, null);
+                        notEqual(res.body.error, null);
                         done();
                     })
                     .catch(err => {
@@ -203,8 +195,7 @@ describe('AuthController', function () {
                     .expect(401)
                     .set('x-access-token', oldToken)
                     .then(res => {
-                        ok(!res.body.auth);
-                        notEqual(res.body.message, null);
+                        notEqual(res.body.error, null);
                         done();
                     })
                     .catch(err => {
@@ -223,8 +214,7 @@ describe('AuthController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        ok(res.body.auth);
-                        equal(res.body.message, null);
+                        equal(res.body.error, null);
                         done();
                     })
                     .catch(err => {
@@ -243,8 +233,7 @@ describe('AuthController', function () {
                     .get('/api/auth/logout')
                     .expect(403)
                     .then(res => {
-                        ok(!res.body.auth);
-                        notEqual(res.body.message, null);
+                        notEqual(res.body.error, null);
                         done();
                     })
                     .catch(err => {
@@ -264,8 +253,7 @@ describe('AuthController', function () {
                     .set('x-access-token', oldToken)
                     .expect(401)
                     .then(res => {
-                        ok(!res.body.auth);
-                        notEqual(res.body.message, null);
+                        notEqual(res.body.error, null);
                         done();
                     })
                     .catch(err => {
@@ -284,7 +272,6 @@ describe('AuthController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        ok(!res.body.auth);
                         equal(res.body.token, null);
                         done();
                     })
