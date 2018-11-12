@@ -1,9 +1,9 @@
-import * as mkdirp from 'mkdirp';
+import * as mkdirp from "mkdirp";
 import {randomBytes} from "crypto";
 import {spawn} from "child_process";
 import {Database} from "../database/Database";
 import {ErrorResponse, Identifiable, StreamData} from "../model";
-import {exists, readFile, unlink} from "fs";
+import {access, constants, readFile, unlink} from "fs";
 
 export function createStream(callback: (code: number, response: Identifiable | ErrorResponse) => void) {
     checkStreamFolder((code, response) => {
@@ -66,8 +66,8 @@ function checkStreamFolder(callback: (code: number, response: ErrorResponse | un
 }
 
 function checkStreamFile(id: string, callback: (code: number, response: ErrorResponse | undefined) => void) {
-    exists('streams/' + id, (exists: boolean) => {
-        if (!exists) return callback(204, {error: "Cannot find the stream"});
+    access('streams/' + id, constants.F_OK,err => {
+        if (err) return callback(204, {error: "Cannot find the stream"});
         callback(0, undefined);
     });
 }

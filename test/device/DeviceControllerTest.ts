@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import {createDevice, createUser, generateAndSaveSessionToken, removeDevice, removeUser} from "../utils/DatabaseUtils";
-import {ok, notEqual} from "assert";
+import {ok} from "assert";
 import {app} from '../../src/app';
 
 describe('DeviceController', function () {
@@ -22,7 +22,7 @@ describe('DeviceController', function () {
                     .get('/api/device')
                     .expect(403)
                     .then(res => {
-                        notEqual(res.body.error, null);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -42,7 +42,7 @@ describe('DeviceController', function () {
                     .set('x-access-token', oldToken)
                     .expect(401)
                     .then(res => {
-                        notEqual(res.body.error, null);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -61,7 +61,7 @@ describe('DeviceController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        notEqual(res.body, null);
+                        ok(res.body);
                         done();
                     })
                     .catch(err => {
@@ -95,7 +95,7 @@ describe('DeviceController', function () {
                     .send({ status: 'on' })
                     .expect(404)
                     .then(res => {
-                        notEqual(res.body.error, null);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -113,7 +113,7 @@ describe('DeviceController', function () {
                     .set('x-access-token', token)
                     .expect(400)
                     .then(res => {
-                        notEqual(res.body.error, null);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -132,7 +132,7 @@ describe('DeviceController', function () {
                     .send({ status: 'invalidStatus' })
                     .expect(400)
                     .then(res => {
-                        notEqual(res.body.error, null);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -151,8 +151,8 @@ describe('DeviceController', function () {
                     .send({ status: 'on' })
                     .expect(200)
                     .then(res => {
-                        notEqual(res.body.id, null);
-                        notEqual(res.body.status, null);
+                        ok(res.body.id);
+                        ok(res.body.status);
                         done();
                     })
                     .catch(err => {

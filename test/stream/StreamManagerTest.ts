@@ -1,5 +1,5 @@
 import {createStream, deleteStream, readString} from "../../src/stream/StreamManager";
-import {exists, writeFile} from "fs";
+import {constants, access, writeFile} from "fs";
 import {deepStrictEqual, ok} from "assert";
 import {Database} from "../../src/database/Database";
 import {Identifiable, StreamData} from "../../src/model";
@@ -10,8 +10,8 @@ describe('StreamManager', function() {
             createStream((code, response) => {
                 deepStrictEqual(code, 200);
                 ok(response.hasOwnProperty('id'));
-                exists("streams/" + (response as Identifiable).id, exists => {
-                    ok(exists);
+                access("streams/" + (response as Identifiable).id, constants.F_OK,  err => {
+                    ok(!err);
                     done();
                 });
             });
@@ -45,8 +45,8 @@ describe('StreamManager', function() {
                 ok(!err);
                 deleteStream(id, code => {
                     deepStrictEqual(code, 200);
-                    exists('streams/' + id, exists => {
-                        ok(!exists);
+                    access('streams/' + id, constants.F_OK, err => {
+                        ok(err);
                         done();
                     });
                 });

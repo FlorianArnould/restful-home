@@ -6,7 +6,7 @@ import {
     generateAndSaveShortTermRefreshToken,
     removeUser
 } from "../utils/DatabaseUtils";
-import {ok, notEqual, strictEqual, equal, notStrictEqual} from "assert";
+import {ok, deepStrictEqual} from "assert";
 import {app} from '../../src/app';
 
 describe('AuthController', function () {
@@ -29,8 +29,8 @@ describe('AuthController', function () {
                     .send({ username: 'wrongLogin', password: 'something' })
                     .expect(401)
                     .then(res => {
-                        strictEqual(res.body.refreshToken, undefined);
-                        strictEqual(res.body.sessionToken, undefined);
+                        deepStrictEqual(res.body.refreshToken, undefined);
+                        deepStrictEqual(res.body.sessionToken, undefined);
                         ok(res.body.error);
                         done();
                     })
@@ -49,8 +49,8 @@ describe('AuthController', function () {
                     .send({ username: 'test', password: 'somethingWrong' })
                     .expect(401)
                     .then(res => {
-                        strictEqual(res.body.refreshToken, undefined);
-                        strictEqual(res.body.sessionToken, undefined);
+                        deepStrictEqual(res.body.refreshToken, undefined);
+                        deepStrictEqual(res.body.sessionToken, undefined);
                         ok(res.body.error);
                         done();
                     })
@@ -90,9 +90,9 @@ describe('AuthController', function () {
                     .get('/api/refreshToken')
                     .expect(403)
                     .then(res => {
-                        strictEqual(res.body.refreshToken, undefined);
-                        strictEqual(res.body.sessionToken, undefined);
-                        notEqual(res.body.error, null);
+                        deepStrictEqual(res.body.refreshToken, undefined);
+                        deepStrictEqual(res.body.sessionToken, undefined);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -112,9 +112,9 @@ describe('AuthController', function () {
                     .expect(401)
                     .set('x-access-token', oldToken)
                     .then(res => {
-                        strictEqual(res.body.refreshToken, undefined);
-                        strictEqual(res.body.sessionToken, undefined);
-                        notEqual(res.body.error, null);
+                        deepStrictEqual(res.body.refreshToken, undefined);
+                        deepStrictEqual(res.body.sessionToken, undefined);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -133,9 +133,9 @@ describe('AuthController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        strictEqual(res.body.refreshToken, undefined);
-                        notStrictEqual(res.body.sessionToken, undefined);
-                        equal(res.body.error, null);
+                        deepStrictEqual(res.body.refreshToken, undefined);
+                        ok(res.body.sessionToken);
+                        deepStrictEqual(res.body.error, undefined);
                         done();
                     })
                     .catch(err => {
@@ -154,9 +154,9 @@ describe('AuthController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        notStrictEqual(res.body.refreshToken, undefined);
-                        notStrictEqual(res.body.sessionToken, undefined);
-                        equal(res.body.error, null);
+                        ok(res.body.refreshToken);
+                        ok(res.body.sessionToken);
+                        deepStrictEqual(res.body.error, undefined);
                         done();
                     })
                     .catch(err => {
@@ -175,7 +175,7 @@ describe('AuthController', function () {
                     .get('/api/isAuthenticated')
                     .expect(403)
                     .then(res => {
-                        notEqual(res.body.error, null);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -195,7 +195,7 @@ describe('AuthController', function () {
                     .expect(401)
                     .set('x-access-token', oldToken)
                     .then(res => {
-                        notEqual(res.body.error, null);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -214,7 +214,7 @@ describe('AuthController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        equal(res.body.error, null);
+                        deepStrictEqual(res.body.error, undefined);
                         done();
                     })
                     .catch(err => {
@@ -233,7 +233,7 @@ describe('AuthController', function () {
                     .get('/api/logout')
                     .expect(403)
                     .then(res => {
-                        notEqual(res.body.error, null);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -253,7 +253,7 @@ describe('AuthController', function () {
                     .set('x-access-token', oldToken)
                     .expect(401)
                     .then(res => {
-                        notEqual(res.body.error, null);
+                        ok(res.body.error);
                         done();
                     })
                     .catch(err => {
@@ -272,7 +272,7 @@ describe('AuthController', function () {
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
-                        equal(res.body.token, null);
+                        deepStrictEqual(res.body.token, undefined);
                         done();
                     })
                     .catch(err => {

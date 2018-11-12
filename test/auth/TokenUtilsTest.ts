@@ -1,6 +1,6 @@
 import {createUser, removeUser} from "../utils/DatabaseUtils";
 import {generateRefreshToken, generateSessionToken, verifyRefreshToken, verifySessionToken} from "../../src/auth";
-import {notEqual, equal, ok, deepStrictEqual} from "assert";
+import {ok, deepStrictEqual} from "assert";
 import {Database} from "../../src/database/Database";
 import {secret} from '../../src/config';
 import {sign} from "jsonwebtoken";
@@ -41,14 +41,14 @@ describe('TokenUtils', function () {
     describe('generateSessionToken', function () {
         it('check token not null', function () {
             let token = generateSessionToken();
-            notEqual(token, null);
+            ok(token);
         });
     });
 
     describe('generateRefreshToken', function () {
         it('check token not null', function () {
             let token = generateRefreshToken();
-            notEqual(token, null);
+            ok(token);
         });
     });
 
@@ -60,8 +60,8 @@ describe('TokenUtils', function () {
             db.close();
             mockReq.setup(x => x.get(TypeMoq.It.isAnyString())).returns(() => token);
             verifySessionToken(mockReq.object, res, (foundUser: User) => {
-                notEqual(foundUser, null);
-                equal(foundUser.id, user.id);
+                ok(foundUser);
+                deepStrictEqual(foundUser.id, user.id);
                 done();
             });
         });
@@ -79,7 +79,7 @@ describe('TokenUtils', function () {
                 return mockRes.target;
             });
             mockRes.setup(x => x.send(TypeMoq.It.is<ErrorResponse>(() => true))).returns((message: string) => {
-                notEqual(message, null);
+                ok(message);
                 done();
                 return mockRes.target;
             });
@@ -99,8 +99,8 @@ describe('TokenUtils', function () {
             mockReq.setup(x => x.get(TypeMoq.It.isAnyString())).returns(() => token);
             verifyRefreshToken(mockReq.object, res, function (foundUser, canRenewRefreshToken) {
                 ok(!canRenewRefreshToken);
-                notEqual(foundUser, null);
-                equal(foundUser.id, user.id);
+                ok(foundUser);
+                deepStrictEqual(foundUser.id, user.id);
                 done();
             });
         });
@@ -114,7 +114,7 @@ describe('TokenUtils', function () {
             mockReq.setup(x => x.get(TypeMoq.It.isAnyString())).returns(() => token);
             const mockRes = TypeMoq.Mock.ofType<Response<ErrorResponse>>();
             mockRes.setup(x => x.send(TypeMoq.It.is<ErrorResponse>(() => true))).returns((message: string) => {
-                notEqual(message, null);
+                ok(message);
                 done();
                 return mockRes.target;
             });
@@ -137,8 +137,8 @@ describe('TokenUtils', function () {
             mockReq.setup(x => x.get(TypeMoq.It.isAnyString())).returns(() => token);
             verifyRefreshToken(mockReq.object, res, function (foundUser, canRenewRefreshToken) {
                 ok(canRenewRefreshToken);
-                notEqual(foundUser, null);
-                equal(foundUser.id, user.id);
+                ok(foundUser);
+                deepStrictEqual(foundUser.id, user.id);
                 done();
             });
         });

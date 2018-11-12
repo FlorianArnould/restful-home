@@ -5,7 +5,6 @@ import {sign} from "jsonwebtoken";
 import {Database} from '../../src/database/Database';
 import {hashSync} from "bcryptjs";
 
-
 const config = require('../../src/config');
 
 export function createUser(user: User): number {
