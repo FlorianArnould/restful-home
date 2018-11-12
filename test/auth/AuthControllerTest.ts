@@ -21,11 +21,11 @@ describe('AuthController', function () {
         removeUser(user.id);
     });
 
-    describe('POST /api/auth/login', function () {
+    describe('POST /api/login', function () {
         it('Wrong login', (done) => {
             try {
                 request(app)
-                    .post('/api/auth/login')
+                    .post('/api/login')
                     .send({ username: 'wrongLogin', password: 'something' })
                     .expect(401)
                     .then(res => {
@@ -45,7 +45,7 @@ describe('AuthController', function () {
         it('Wrong password', (done) => {
             try {
                 request(app)
-                    .post('/api/auth/login')
+                    .post('/api/login')
                     .send({ username: 'test', password: 'somethingWrong' })
                     .expect(401)
                     .then(res => {
@@ -65,7 +65,7 @@ describe('AuthController', function () {
         it('Correct credentials', (done) => {
             try {
                 request(app)
-                    .post('/api/auth/login')
+                    .post('/api/login')
                     .send({ username: 'test', password: 'password' })
                     .expect(200)
                     .then(res => {
@@ -83,11 +83,11 @@ describe('AuthController', function () {
         });
     });
 
-    describe('GET /api/auth/refreshToken', function () {
+    describe('GET /api/refreshToken', function () {
         it('No token', (done) => {
             try {
                 request(app)
-                    .get('/api/auth/refreshToken')
+                    .get('/api/refreshToken')
                     .expect(403)
                     .then(res => {
                         strictEqual(res.body.refreshToken, undefined);
@@ -108,7 +108,7 @@ describe('AuthController', function () {
                 let oldToken = generateAndSaveRefreshToken(user.id);
                 generateAndSaveRefreshToken(user.id);
                 request(app)
-                    .get('/api/auth/refreshToken')
+                    .get('/api/refreshToken')
                     .expect(401)
                     .set('x-access-token', oldToken)
                     .then(res => {
@@ -129,7 +129,7 @@ describe('AuthController', function () {
             try {
                 let token = generateAndSaveRefreshToken(user.id);
                 request(app)
-                    .get('/api/auth/refreshToken')
+                    .get('/api/refreshToken')
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
@@ -150,7 +150,7 @@ describe('AuthController', function () {
             try {
                 let token = generateAndSaveShortTermRefreshToken(user.id);
                 request(app)
-                    .get('/api/auth/refreshToken')
+                    .get('/api/refreshToken')
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
@@ -168,11 +168,11 @@ describe('AuthController', function () {
         });
     });
 
-    describe('GET /api/auth/isAuthenticated', function () {
+    describe('GET /api/isAuthenticated', function () {
         it('No token', (done) => {
             try {
                 request(app)
-                    .get('/api/auth/isAuthenticated')
+                    .get('/api/isAuthenticated')
                     .expect(403)
                     .then(res => {
                         notEqual(res.body.error, null);
@@ -191,7 +191,7 @@ describe('AuthController', function () {
                 let oldToken = generateAndSaveSessionToken(user.id);
                 generateAndSaveSessionToken(user.id);
                 request(app)
-                    .get('/api/auth/isAuthenticated')
+                    .get('/api/isAuthenticated')
                     .expect(401)
                     .set('x-access-token', oldToken)
                     .then(res => {
@@ -210,7 +210,7 @@ describe('AuthController', function () {
             try {
                 let token = generateAndSaveSessionToken(user.id);
                 request(app)
-                    .get('/api/auth/isAuthenticated')
+                    .get('/api/isAuthenticated')
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
@@ -226,11 +226,11 @@ describe('AuthController', function () {
         });
     });
 
-    describe("GET /api/auth/logout", function () {
+    describe("GET /api/logout", function () {
         it('No token', (done) => {
             try {
                 request(app)
-                    .get('/api/auth/logout')
+                    .get('/api/logout')
                     .expect(403)
                     .then(res => {
                         notEqual(res.body.error, null);
@@ -249,7 +249,7 @@ describe('AuthController', function () {
                 let oldToken = generateAndSaveSessionToken(user.id);
                 generateAndSaveSessionToken(user.id);
                 request(app)
-                    .get('/api/auth/logout')
+                    .get('/api/logout')
                     .set('x-access-token', oldToken)
                     .expect(401)
                     .then(res => {
@@ -268,7 +268,7 @@ describe('AuthController', function () {
             try {
                 let token = generateAndSaveSessionToken(user.id);
                 request(app)
-                    .get('/api/auth/logout')
+                    .get('/api/logout')
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {

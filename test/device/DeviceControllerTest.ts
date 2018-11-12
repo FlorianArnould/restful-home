@@ -15,11 +15,11 @@ describe('DeviceController', function () {
         removeUser(user.id);
     });
 
-    describe('GET /api/device/all', function () {
+    describe('GET /api/device', function () {
         it('No token', (done) => {
             try {
                 request(app)
-                    .get('/api/device/all')
+                    .get('/api/device')
                     .expect(403)
                     .then(res => {
                         notEqual(res.body.error, null);
@@ -38,7 +38,7 @@ describe('DeviceController', function () {
                 let oldToken = generateAndSaveSessionToken(user.id);
                 generateAndSaveSessionToken(user.id);
                 request(app)
-                    .get('/api/device/all')
+                    .get('/api/device')
                     .set('x-access-token', oldToken)
                     .expect(401)
                     .then(res => {
@@ -57,7 +57,7 @@ describe('DeviceController', function () {
             try {
                 let token = generateAndSaveSessionToken(user.id);
                 request(app)
-                    .get('/api/device/all')
+                    .get('/api/device')
                     .set('x-access-token', token)
                     .expect(200)
                     .then(res => {
@@ -74,8 +74,7 @@ describe('DeviceController', function () {
         });
     });
 
-    describe('PUT /api/device/onoff/:id', function () {
-
+    describe('PUT /api/device/:id', function () {
         let device = {id: 0, name: 'test', description: 'description', type: 1, file: 'file.js'};
         let token: string;
 
@@ -91,7 +90,7 @@ describe('DeviceController', function () {
         it('Device id does not exist' , (done) => {
             try {
                 request(app)
-                    .put('/api/device/onoff/idWhichDoesNotExist')
+                    .put('/api/device/idWhichDoesNotExist')
                     .set('x-access-token', token)
                     .send({ status: 'on' })
                     .expect(404)
@@ -110,7 +109,7 @@ describe('DeviceController', function () {
         it('No status provided', (done) => {
             try {
                 request(app)
-                    .put('/api/device/onoff/' + device.id)
+                    .put('/api/device/' + device.id)
                     .set('x-access-token', token)
                     .expect(400)
                     .then(res => {
@@ -128,7 +127,7 @@ describe('DeviceController', function () {
         it('Invalid status provided', (done) => {
             try {
                 request(app)
-                    .put('/api/device/onoff/' + device.id)
+                    .put('/api/device/' + device.id)
                     .set('x-access-token', token)
                     .send({ status: 'invalidStatus' })
                     .expect(400)
@@ -147,7 +146,7 @@ describe('DeviceController', function () {
         it('Correct id and status', (done) => {
             try {
                 request(app)
-                    .put('/api/device/onoff/' + device.id)
+                    .put('/api/device/' + device.id)
                     .set('x-access-token', token)
                     .send({ status: 'on' })
                     .expect(200)

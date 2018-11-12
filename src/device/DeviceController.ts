@@ -10,7 +10,7 @@ export const router = new Router();
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-router.get<Device[] | ErrorResponse>('/all', (req, res) => {
+router.get<Device[] | ErrorResponse>('/', (req, res) => {
     verifySessionToken(req, res, () => {
         let db = new Database();
         let devices = db.getDevices();
@@ -19,7 +19,7 @@ router.get<Device[] | ErrorResponse>('/all', (req, res) => {
     })
 });
 
-router.put<DeviceStatus | ErrorResponse>('/onoff/:id', (req, res) => {
+router.put<DeviceStatus | ErrorResponse>('/:id', (req, res) => {
     verifySessionToken(req, res, () => {
         let deviceId = req.params.id;
         let db = new Database();

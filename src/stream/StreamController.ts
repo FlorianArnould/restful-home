@@ -10,7 +10,7 @@ export const router = new Router();
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-router.get<Identifiable | ErrorResponse>('/create', (req, res) => {
+router.get<Identifiable | ErrorResponse>('/', (req, res) => {
     verifySessionToken(req, res, () => {
         createStream((code, response) => res.status(code).send(response));
     });

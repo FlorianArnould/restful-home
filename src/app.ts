@@ -6,7 +6,7 @@ app.get('/api', function (req, res) {
     res.status(200).send({ running: true });
 });
 
-app.use('/api/auth', require('./auth/AuthController').router.getExpressRouter());
+app.use('/api', require('./auth/AuthController').router.getExpressRouter());
 
 app.use('/api/device', require('./device/DeviceController').router.getExpressRouter());
 
