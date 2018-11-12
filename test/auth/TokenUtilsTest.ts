@@ -2,7 +2,7 @@ import {createUser, removeUser} from "../utils/DatabaseUtils";
 import {generateRefreshToken, generateSessionToken, verifyRefreshToken, verifySessionToken} from "../../src/auth";
 import {notEqual, equal, ok, deepStrictEqual} from "assert";
 import {Database} from "../../src/database/Database";
-import {secret} from '../../config';
+import {secret} from '../../src/config';
 import {sign} from "jsonwebtoken";
 import {randomBytes} from "crypto";
 import {ErrorResponse, User} from "../../src/model";

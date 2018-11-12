@@ -62,7 +62,7 @@ typings/
 
 database.db
 package-lock.json
-config.ts
+src/config.ts
 .idea
 .scannerwork
 ssl

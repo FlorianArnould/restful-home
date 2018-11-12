@@ -6,7 +6,7 @@ import {Database} from '../../src/database/Database';
 import {hashSync} from "bcryptjs";
 
 
-const config = require('../../config');
+const config = require('../../src/config');
 
 export function createUser(user: User): number {
     let db = new SQLiteDatabase('database.db');

@@ -3,8 +3,8 @@ import {ErrorResponse, Expirable, User} from "../model";
 import {sign, verify, VerifyErrors} from "jsonwebtoken";
 import {Database} from "../database/Database";
 import {randomBytes} from "crypto";
-import {secret} from "../../config";
 import {Response} from "../router";
+import {secret} from "../config";
 
 export function generateSessionToken(): string {
     return generateToken(7200);
