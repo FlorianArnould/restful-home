@@ -1,5 +1,5 @@
 import {Router} from "../router";
-import * as bodyParser from "body-parser";
+import bodyParser from "body-parser";
 
 import {verifySessionToken} from "../auth";
 import {createStream, deleteStream, readString} from "./StreamManager";

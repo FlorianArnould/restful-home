@@ -4,7 +4,7 @@ const sq = require('better-sqlite3');
 
 let secret = crypto.randomBytes(20).toString('hex');
 let content = `export const secret = "${secret}";`;
-fs.writeFile('config.ts', content, function (err) {
+fs.writeFile('src/config.ts', content, function (err) {
     if (err) throw err;
     console.log('config.ts created');
 });

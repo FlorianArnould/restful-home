@@ -1,4 +1,4 @@
-import * as mkdirp from "mkdirp";
+import mkdirp from "mkdirp";
 import {randomBytes} from "crypto";
 import {spawn} from "child_process";
 import {Database} from "../database/Database";

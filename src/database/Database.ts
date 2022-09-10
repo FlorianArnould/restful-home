@@ -1,10 +1,12 @@
-import * as SQLiteDatabase from 'better-sqlite3';
+import SQLiteDatabaseFactory, {Database as SQLiteDatabase} from 'better-sqlite3';
 import {Device, StreamInfo, User} from "../model";
+import {WeatherRecord} from "../model/WeatherRecord";
+
 export class Database {
     private db: SQLiteDatabase;
 
     constructor() {
-        this.db = new SQLiteDatabase('database.db');
+        this.db = new SQLiteDatabaseFactory('database.db');
     }
 
     getUser(username: string): User {
@@ -32,11 +34,11 @@ export class Database {
     }
 
     getDevices(): Device[] {
-        return this.db.prepare("SELECT id, name, description, type, file FROM devices").all();
+        return this.db.prepare("SELECT id, name, description, type, rfxcomId FROM devices").all();
     }
 
     getDeviceById(id: number): Device {
-        return this.db.prepare("SELECT id, name, description, type, file FROM devices WHERE id = ?").get(id);
+        return this.db.prepare("SELECT id, name, description, type, rfxcomId FROM devices WHERE id = ?").get(id);
     }
 
     createStream(id: string) {
@@ -57,6 +59,14 @@ export class Database {
 
     finishStream(id: string) {
         this.db.prepare("UPDATE streams SET isFinished = 'true' WHERE id = ?").run(id);
+    }
+
+    putWeatherRecord(temperature: number, humidity: number) {
+        this.db.prepare("INSERT INTO weather (temperature, humidity) VALUES (?, ?)").run(temperature, humidity);
+    }
+
+    getLatestWeatherRecord(): WeatherRecord {
+        return this.db.prepare("SELECT temperature, humidity, date FROM weather WHERE date = (SELECT MAX(date) FROM weather)").get();
     }
 
     close() {
